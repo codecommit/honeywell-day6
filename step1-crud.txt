@@ -1,0 +1,44 @@
+let express = require("express");
+let mongoose = require("mongoose");// ORM
+
+let app = express();
+
+let Schema = mongoose.Schema;
+let ObjectId = Schema.ObjectId;
+var Hero = mongoose.model("Hero", new Schema({
+    id:ObjectId,
+    title:String,
+    power:Number
+}));
+
+mongoose.Promise = global.Promise;
+ mongoose.connect("mongodb://honeywelluser:honeywell123@ds145183.mlab.com:45183/honeywelldb", { useNewUrlParser: true }).then(
+// mongoose.connect("mongodb://localhost:27017/honeywelldb", { useNewUrlParser: true }).then(
+    () => {
+      console.log("DB Connected");
+
+      Hero.find(function(error, heroes){
+        if(error){
+            console.log("Error : ", error)
+        }else{
+            console.log(heroes); 
+        }
+    })
+    },
+    (error) => {console.log("Error ", error)}
+);
+//MIDDLEWARES---------------------------
+app.get("/", function(reqest, response){
+        // console.log(reqest.url)// '/'
+        // response.send("hello from honeywell")
+       
+})
+//--------------------------------------
+
+app.listen(2525, function(error){
+    if(error){
+        console.log(error)
+    }else{
+        console.log("web server is now live on localhost:2525")
+    }
+});

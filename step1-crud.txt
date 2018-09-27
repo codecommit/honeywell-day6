@@ -1,7 +1,11 @@
 let express = require("express");
 let mongoose = require("mongoose");// ORM
+let bodyparser = require("body-parser");
+let cors = require("cors");
+
 
 let app = express();
+let heroRoutes = express.Router();
 
 let Schema = mongoose.Schema;
 let ObjectId = Schema.ObjectId;
@@ -14,24 +18,22 @@ var Hero = mongoose.model("Hero", new Schema({
 mongoose.Promise = global.Promise;
  mongoose.connect("mongodb://honeywelluser:honeywell123@ds145183.mlab.com:45183/honeywelldb", { useNewUrlParser: true }).then(
 // mongoose.connect("mongodb://localhost:27017/honeywelldb", { useNewUrlParser: true }).then(
-    () => {
-      console.log("DB Connected");
+    () => { console.log("DB Connected")},
+    (error) => {console.log("Error ", error)}
+);
+//MIDDLEWARES---------------------------
+app.use(bodyparser.json());
+app.use(cors());
+app.use("/heroes", heroRoutes);
 
+heroRoutes.route("/").get(function(reqest, response){
       Hero.find(function(error, heroes){
         if(error){
             console.log("Error : ", error)
         }else{
-            console.log(heroes); 
+            response.send(heroes); 
         }
     })
-    },
-    (error) => {console.log("Error ", error)}
-);
-//MIDDLEWARES---------------------------
-app.get("/", function(reqest, response){
-        // console.log(reqest.url)// '/'
-        // response.send("hello from honeywell")
-       
 })
 //--------------------------------------
 
